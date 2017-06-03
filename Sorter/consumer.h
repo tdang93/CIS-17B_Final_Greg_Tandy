@@ -1,7 +1,9 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
+
 #include <QThread>
 #include <QMutex>
+#include <algorithm>
 
 class Consumer : public QThread
 {

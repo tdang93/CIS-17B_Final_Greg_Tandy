@@ -1,3 +1,7 @@
+#include "consumer.h"
+#include "producer.h"
+#include "textedit.h"
+
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QApplication>
@@ -12,6 +16,7 @@ int main(int argc, char **argv)
 
     Producer producer;
     Consumer consumer;
+    TextEdit textEdit;
 
     producer.QList_ptr = &myQList;
     producer.QMutex_ptr = &mutex;
@@ -21,6 +26,9 @@ int main(int argc, char **argv)
 
     QObject::connect(&producer, SIGNAL(sendSignal()), &consumer, SLOT(run()));
     QObject::connect(&consumer, SIGNAL(sendSignal(QString)), &textEdit, SLOT(SetText(QString)));
+
+    textEdit.show();
+    producer.fill();
 
     return app.exec();
 }

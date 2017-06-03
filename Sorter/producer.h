@@ -14,9 +14,7 @@ public:
     QMutex* QMutex_ptr = NULL;
     QList<int>* QList_ptr = NULL;
     Producer* producer_ptr = NULL;
-    void fill(int times);
-
-    int times;
+    void fill();
 
 signals:
     void sendSignal();

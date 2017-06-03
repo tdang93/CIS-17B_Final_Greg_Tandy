@@ -1,4 +1,7 @@
-QT += network widgets
+TEMPLATE = app
+TARGET = CIS-17b_Final_Greg_Tandy
+
+QT = core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,4 +16,5 @@ HEADERS += \
     consumer.h \
     producer.h
 
-DISTFILES +=
+FORMS += \
+    textedit.ui

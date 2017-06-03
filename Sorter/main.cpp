@@ -1,65 +1,3 @@
-#ifndef PRODUCER_H
-#define PRODUCER_H
-
-#include <QThread>
-#include <QMutex>
-
-class Producer : public QThread
-{
-    Q_OBJECT
-public:
-    Producer();
-    ~Producer();
-
-//    void run();
-    QMutex* QMutex_ptr = NULL;
-    QList<unsigned long long>* QList_ptr = NULL;
-    Producer* producer_ptr = NULL;
-    void fill(int times);
-
-    int times;
-
-signals:
-    void sendSignal();
-
-public slots:
-//    void run(int);
-    void run();
-};
-
-#endif // PRODUCER_H
-
-#ifndef CONSUMER_H
-#define CONSUMER_H
-
-#include <QThread>
-#include <QMutex>
-
-class Consumer : public QThread
-{
-    Q_OBJECT
-public:
-    Consumer();
-    ~Consumer();
-
-//    void run();
-    QMutex* QMutex_ptr = NULL;
-    QList<unsigned long long>* QList_ptr = NULL;
-    int send;
-
-    void pour();
-signals:
-    void sendSignal(QString);
-
-public slots:
-//    void pour();
-    void run();
-};
-
-#endif // CONSUMER_H
-
-//==================================================
-//MAIN
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QApplication>
@@ -86,7 +24,3 @@ int main(int argc, char **argv)
 
     return app.exec();
 }
-//MAIN
-//==================================================
-
-

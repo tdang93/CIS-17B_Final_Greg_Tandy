@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QMutex>
+#include <QtCore>
 
 int main(int argc, char **argv)
 {
@@ -17,7 +18,7 @@ int main(int argc, char **argv)
     Producer producer;
     Consumer consumer;
     TextEdit textEdit;
-
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     producer.QList_ptr = &myQList;
     producer.QMutex_ptr = &mutex;
 

@@ -38,17 +38,10 @@ Server::Server(QWidget *parent)
         sessionOpened();
     }
 
-    fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
-             << tr("You've got to think about tomorrow.")
-             << tr("You will be surprised by a loud noise.")
-             << tr("You will feel hungry again in another hour.")
-             << tr("You might have mail.")
-             << tr("You cannot kill time without injuring eternity.")
-             << tr("Computers are not intelligent. They only think they are.");
     QPushButton *quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
-    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendFortune); // this is important
+    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendNumberList);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
@@ -120,13 +113,23 @@ void Server::sessionOpened()
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
-void Server::sendFortune()
+void Server::sendNumberList()
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
-    out << fortunes.at(qrand() % fortunes.size());
+    QMutex_ptr->lock();
+
+    //number of outputs
+    for (int i = 0; i < 50; i++)
+    {
+        number = QString::number((qrand() % 1000) + 1); // should this be to 999 because of +1?
+        QStringList_ptr->push_back(number);
+    }
+    QMutex_ptr->unlock();
+
+    out << QStringList_ptr;
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,

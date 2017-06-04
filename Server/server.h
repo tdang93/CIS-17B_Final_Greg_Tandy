@@ -2,6 +2,8 @@
 #define SERVER_H
 
 #include <QDialog>
+#include <QThread>
+#include <QMutex>
 
 // forward declarations, or else Qt will complain
 class QLabel;
@@ -15,15 +17,17 @@ class Server : public QDialog
 
 public:
     explicit Server(QWidget *parent = Q_NULLPTR);
+    QMutex* QMutex_ptr = NULL;
+    QString number;
+    QStringList* QStringList_ptr = NULL;
 
 private slots:
     void sessionOpened();
-    void sendFortune();
+    void sendNumberList();
 
 private:
     QLabel *statusLabel;
     QTcpServer *tcpServer;
-    QStringList fortunes;
     QNetworkSession *networkSession;
     QDataStream in;
 };

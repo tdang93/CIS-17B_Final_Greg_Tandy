@@ -137,4 +137,6 @@ void Server::sendNumberList()
 
     clientConnection->write(block);
     clientConnection->disconnectFromHost();
+
+    QStringList_ptr = NULL; // after the info is sent, clear out the list so it can be freshly filled again
 }

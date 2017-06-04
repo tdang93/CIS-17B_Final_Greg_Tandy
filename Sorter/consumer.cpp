@@ -17,7 +17,7 @@ void Consumer::run()
 
 void Consumer::pour()
 {
-    QMutex_ptr->lock(); // lock the thread
+    QMutex_ptr->lock(); // Lock the thread
 
     QString QS;
     int counter = 0;
@@ -51,7 +51,7 @@ void Consumer::pour()
         QS += QString::number(QList_ptr->takeFirst());
         QS += "\n" ;
     }
-    QMutex_ptr->unlock(); // unlock the thread
+    QMutex_ptr->unlock(); // Unlock the thread
 
     emit sendSignal(QS);
 }

@@ -1,20 +1,18 @@
 TEMPLATE = app
 TARGET = CIS-17b_Final_Greg_Tandy
 
-QT = core gui
+QT = core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 SOURCES += \
     main.cpp \
     textedit.cpp \
-    consumer.cpp \
-    producer.cpp
+    client.cpp
 
 HEADERS += \
     textedit.h \
-    consumer.h \
-    producer.h
+    client.h
 
 FORMS += \
     textedit.ui

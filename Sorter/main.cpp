@@ -1,5 +1,4 @@
-#include "consumer.h"
-#include "producer.h"
+#include "client.h"
 #include "textedit.h"
 
 #include <QTextEdit>
@@ -10,26 +9,26 @@
 
 int main(int argc, char **argv)
 {
-    QMutex mutex;
+//    QMutex mutex;
 
-    QList<int> myQList;
+//    QList<int> myQList;
     QApplication app(argc, argv);
 
-    Producer producer;
-    Consumer consumer;
+//    Producer producer;
+    Client client;
     TextEdit textEdit;
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    producer.QList_ptr = &myQList;
-    producer.QMutex_ptr = &mutex;
+//    producer.QList_ptr = &myQList;
+//    producer.QMutex_ptr = &mutex;
 
-    consumer.QList_ptr = &myQList;
-    consumer.QMutex_ptr = &mutex;
+//    consumer.QList_ptr = &myQList;
+//    consumer.QMutex_ptr = &mutex;
 
-    QObject::connect(&producer, SIGNAL(sendSignal()), &consumer, SLOT(run()));
-    QObject::connect(&consumer, SIGNAL(sendSignal(QString)), &textEdit, SLOT(SetText(QString)));
+//    QObject::connect(&producer, SIGNAL(sendSignal()), &consumer, SLOT(run()));
+    QObject::connect(&client, SIGNAL(sendSignal(QString)), &textEdit, SLOT(SetText(QString)));
 
+//    textEdit.show();
+    client.show();
     textEdit.show();
-    producer.fill();
-
     return app.exec();
 }

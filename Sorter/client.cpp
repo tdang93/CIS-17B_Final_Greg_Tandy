@@ -2,6 +2,7 @@
 #include <QtNetwork>
 
 #include "client.h"
+#include "consumer.h"
 
 Client::Client(QWidget *parent)
     : QDialog(parent)
@@ -64,7 +65,8 @@ Client::Client(QWidget *parent)
     connect(startButton, &QAbstractButton::clicked,
             this, &Client::requestNumberList);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
-    connect(tcpSocket, &QIODevice::readyRead, this, &Client::readNumberList);
+    connect(tcpSocket, &QIODevice::readyRead, this, &Client::readNumberList); // reworked so that it runs Consumer from inside Client
+//    connect(tcpSocket, &QIODevice::readyRead, this, &Client::Consumer_ptr->run()); // doesn't work
     connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
             this, &Client::displayError);
 
@@ -125,8 +127,11 @@ void Client::requestNumberList()
                              portLineEdit->text().toInt());
 }
 
+// reworked so that it runs Consumer from inside Client
 void Client::readNumberList()
 {
+    Consumer_ptr->run();
+/*
     QMutex_ptr->lock();
 
     QStringList numberList;
@@ -169,6 +174,7 @@ void Client::readNumberList()
     emit sendSignal(QS);
 
     startButton->setEnabled(true);
+*/
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)

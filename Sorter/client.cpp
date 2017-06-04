@@ -7,7 +7,7 @@ Client::Client(QWidget *parent)
     : QDialog(parent)
     , hostCombo(new QComboBox)
     , portLineEdit(new QLineEdit)
-    , getFortuneButton(new QPushButton(tr("Start")))
+    , startButton(new QPushButton(tr("Start")))
     , tcpSocket(new QTcpSocket(this))
     , networkSession(Q_NULLPTR)
 {
@@ -45,23 +45,23 @@ Client::Client(QWidget *parent)
 
     statusLabel = new QLabel(tr("Please run the Server as well."));
 
-    getFortuneButton->setDefault(true);
-    getFortuneButton->setEnabled(false);
+    startButton->setDefault(true);
+    startButton->setEnabled(false);
 
     QPushButton *quitButton = new QPushButton(tr("Quit"));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(getFortuneButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     in.setDevice(tcpSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
     connect(hostCombo, &QComboBox::editTextChanged,
-            this, &Client::enableGetFortuneButton);
+            this, &Client::enableStartButton);
     connect(portLineEdit, &QLineEdit::textChanged,
-            this, &Client::enableGetFortuneButton);
-    connect(getFortuneButton, &QAbstractButton::clicked,
+            this, &Client::enableStartButton);
+    connect(startButton, &QAbstractButton::clicked,
             this, &Client::requestNumberList);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
     connect(tcpSocket, &QIODevice::readyRead, this, &Client::readNumberList);
@@ -111,7 +111,7 @@ Client::Client(QWidget *parent)
         networkSession = new QNetworkSession(config, this);
         connect(networkSession, &QNetworkSession::opened, this, &Client::sessionOpened);
 
-        getFortuneButton->setEnabled(false);
+        startButton->setEnabled(false);
         statusLabel->setText(tr("Opening network session."));
         networkSession->open();
     }
@@ -119,7 +119,7 @@ Client::Client(QWidget *parent)
 
 void Client::requestNumberList()
 {
-    getFortuneButton->setEnabled(false);
+    startButton->setEnabled(false);
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(),
                              portLineEdit->text().toInt());
@@ -168,7 +168,7 @@ void Client::readNumberList()
 
     emit sendSignal(QS);
 
-    getFortuneButton->setEnabled(true);
+    startButton->setEnabled(true);
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
@@ -177,29 +177,29 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
     case QAbstractSocket::RemoteHostClosedError:
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Sorter Client"),
                                  tr("The host was not found. Please check the "
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Sorter Client"),
                                  tr("The connection was refused by the peer. "
-                                    "Make sure the fortune server is running, "
+                                    "Make sure the Server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
     default:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Sorter Client"),
                                  tr("The following error occurred: %1.")
                                  .arg(tcpSocket->errorString()));
     }
 
-    getFortuneButton->setEnabled(true);
+    startButton->setEnabled(true);
 }
 
-void Client::enableGetFortuneButton()
+void Client::enableStartButton()
 {
-    getFortuneButton->setEnabled((!networkSession || networkSession->isOpen()) &&
+    startButton->setEnabled((!networkSession || networkSession->isOpen()) &&
                                  !hostCombo->currentText().isEmpty() &&
                                  !portLineEdit->text().isEmpty());
 }
@@ -219,8 +219,8 @@ void Client::sessionOpened()
     settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
     settings.endGroup();
 
-    statusLabel->setText(tr("This examples requires that you run the "
-                            "Fortune Server example as well."));
+    statusLabel->setText(tr("This program requires that you run the "
+                            "Server as well."));
 
-    enableGetFortuneButton();
+    enableStartButton();
 }

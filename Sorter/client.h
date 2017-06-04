@@ -27,7 +27,7 @@ signals:
 
 private slots:
     void displayError(QAbstractSocket::SocketError socketError);
-    void enableGetFortuneButton();
+    void enableStartButton();
     void sessionOpened();
     void requestNumberList();
     void readNumberList();
@@ -37,7 +37,7 @@ private:
     QLineEdit *portLineEdit;
     QLabel *statusLabel;
     QLabel *successLabel;
-    QPushButton *getFortuneButton;
+    QPushButton *startButton;
 
     QTcpSocket *tcpSocket;
     QDataStream in;

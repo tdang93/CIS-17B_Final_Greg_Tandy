@@ -124,7 +124,7 @@ void Server::sendNumberList()
     //number of outputs
     for (int i = 0; i < 50; i++)
     {
-        number = QString::number((qrand() % 1000) + 1); // should this be to 999 because of +1?
+        number = QString::number((qrand() % 1000) + 1);
         QStringList_ptr->push_back(number);
     }
     QMutex_ptr->unlock();

@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QMutex>
 #include <algorithm>
+#include <QtNetwork>
 
 class Consumer : public QThread
 {
@@ -13,9 +14,9 @@ public:
     ~Consumer();
 
     QMutex* QMutex_ptr = NULL;
-    QList<int>* QList_ptr = NULL;
+    QStringList* QStringList_ptr = NULL;
     int send;
-
+    QDataStream in;
     void pour();
 signals:
     void sendSignal(QString);

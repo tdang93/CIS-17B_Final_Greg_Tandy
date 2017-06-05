@@ -29,7 +29,6 @@ private:
     QLabel *statusLabel;
     QTcpServer *tcpServer;
     QNetworkSession *networkSession;
-    QDataStream in;
 };
 
 #endif

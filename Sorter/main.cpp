@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     QMutex mutex;
-    QList<int> myQList;
+    QStringList myQStringList;
 //    Producer producer;
     Consumer consumer;
     Client client;
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 //    producer.QList_ptr = &myQList;
 //    producer.QMutex_ptr = &mutex;
 
-    consumer.QList_ptr = &myQList;
+    consumer.QStringList_ptr = &myQStringList;
     consumer.QMutex_ptr = &mutex;
 
     client.Consumer_ptr = &consumer; // assigning client's Consumer_ptr to address of consumer in main

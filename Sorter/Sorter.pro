@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = Sorter_TCP_UDP_Client
+#TARGET = Sorter_TCP-Client_UDP-Receiver
 
 QT = core gui network
 

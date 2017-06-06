@@ -134,24 +134,13 @@ void Client::readFortune()
 {
     in.startTransaction();
 
-//    QString nextFortune;
-//    in >> nextFortune;
     // Modification to accept int to QString
     QList<int> receiveQList;
     in >> receiveQList;
-//    nextFortune = QString::number(temp);
 
     if (!in.commitTransaction())
         return;
-/*
-    if (nextFortune == currentFortune) {
-        QTimer::singleShot(0, this, &Client::requestNewFortune);
-        return;
-    }
 
-    currentFortune = nextFortune;
-    statusLabel->setText(currentFortune);
-*/
     statusLabel->setText(tr("received QList"));
     myConsumer.QList_ptr = &receiveQList;
 

@@ -34,7 +34,7 @@ void Consumer::pour()
             QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
         }
         QS += QString::number(counter) += ": ";
-        QS += QList_ptr->at(i);
+        QS += QString::number(QList_ptr->at(i));
         QS += "\n" ;
     }
     QS += "\n";
@@ -51,7 +51,7 @@ void Consumer::pour()
             QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
         }
         QS += QString::number(counter) += ": ";
-        QS += QList_ptr->takeFirst();
+        QS += QString::number(QList_ptr->takeFirst());
         QS += "\n" ;
     }
     myQMutex.unlock(); // Unlock the thread

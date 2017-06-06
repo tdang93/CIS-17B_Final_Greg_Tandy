@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = CIS-17b_Final_Greg_Tandy
+TARGET = Sorter_TCP_UDP_Client
 
 QT = core gui network
 

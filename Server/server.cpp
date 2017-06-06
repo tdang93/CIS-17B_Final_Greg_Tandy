@@ -89,7 +89,7 @@ void Server::sessionOpened()
 
     tcpServer = new QTcpServer(this);
     if (!tcpServer->listen()) {
-        QMessageBox::critical(this, tr("Fortune Server"),
+        QMessageBox::critical(this, tr("TCP Server"),
                               tr("Unable to start the server: %1.")
                               .arg(tcpServer->errorString()));
         close();
@@ -109,7 +109,7 @@ void Server::sessionOpened()
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
     statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                            "Run the Fortune Client example now.")
+                            "Run the Sorter TCP Client now.")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
@@ -119,7 +119,7 @@ void Server::sendNumberList()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
-    QMutex_ptr->lock();
+//    QMutex_ptr->lock(); // i'm not sure that this needs to be here; commented out for now
 
     //number of outputs
     for (int i = 0; i < 50; i++)
@@ -127,7 +127,7 @@ void Server::sendNumberList()
         number = QString::number((qrand() % 1000) + 1);
         QStringList_ptr->push_back(number);
     }
-    QMutex_ptr->unlock();
+ //   QMutex_ptr->unlock(); // i'm not sure that this needs to be here; commented out for now
 
     out << QStringList_ptr;
 

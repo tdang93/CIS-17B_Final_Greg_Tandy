@@ -16,13 +16,17 @@ public:
     QMutex myQMutex;
     QList<int>* QList_ptr = NULL;
     QDataStream in;
+    QString cTime;
+    QUdpSocket *udpSocket;
 
     void pour();
+
 signals:
     void sendSignal(QString);
 
 public slots:
     void run();
+    void processPendingDatagrams();
 };
 
 #endif // CONSUMER_H

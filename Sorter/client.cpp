@@ -19,6 +19,7 @@ Client::Client(QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     hostCombo->setEditable(true);
     // find out name of this machine
+    hostCombo->addItem(QString("localhost"));
     QString name = QHostInfo::localHostName();
     if (!name.isEmpty()) {
         hostCombo->addItem(name);
@@ -26,8 +27,8 @@ Client::Client(QWidget *parent)
         if (!domain.isEmpty())
             hostCombo->addItem(name + QChar('.') + domain);
     }
-    if (name != QLatin1String("localhost"))
-        hostCombo->addItem(QString("localhost"));
+//    if (name != QLatin1String("localhost"))
+//        hostCombo->addItem(QString("localhost"));
     // find out IP addresses of this machine
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     // add non-localhost addresses
@@ -216,7 +217,8 @@ void Client::processPendingDatagrams()
         datagram.resize(udpSocket->pendingDatagramSize());
         udpSocket->readDatagram(datagram.data(), datagram.size());
         tPort = datagram.data();
+        portLineEdit->setText(tPort);
+
     }
-    portLineEdit->setText(tPort);
     requestNewFortune();
 }

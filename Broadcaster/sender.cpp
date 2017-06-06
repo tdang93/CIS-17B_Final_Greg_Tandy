@@ -39,12 +39,11 @@ void Sender::startBroadcasting()
 
 void Sender::broadcastDatagram()
 {
-    QString cTime = (QTime::currentTime().toString());
     time_t cDate;
     time (&cDate);
 
     statusLabel->setText(ctime(&cDate));
-    QByteArray datagram = cTime.toUtf8();
+    QByteArray datagram = ctime(&cDate);
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
-                             QHostAddress::Broadcast, 54545);
+                             QHostAddress::Broadcast, 45454);
 }

@@ -50,7 +50,9 @@ private:
 
     QPushButton *quitButton;
     QUdpSocket *udpSocket;
+
     QString tPort;
+    QString latestCTime = "";
 };
 
 #endif

@@ -218,7 +218,10 @@ void Client::processPendingDatagrams()
         udpSocket->readDatagram(datagram.data(), datagram.size());
         tPort = datagram.data();
         portLineEdit->setText(tPort);
-
+//        statusLabel->setText(tr("Connected to TCP_Server. Waiting for UDP_Broadcaster."));
     }
-    requestNewFortune();
+    if(myConsumer.cTime != latestCTime){
+        latestCTime = myConsumer.cTime;
+        requestNewFortune();
+    }
 }

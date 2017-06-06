@@ -146,13 +146,13 @@ void Client::readFortune()
     if (!in.commitTransaction())
         return;
 
-    statusLabel->setText(tr("received QList"));
+    statusLabel->setText(tr("Received QList."));
     myConsumer.QList_ptr = &receiveQList;
 
-    statusLabel->setText(tr("sorting QList"));
+    statusLabel->setText(tr("Sorting QList."));
     myConsumer.run();
 
-    statusLabel->setText(tr("displaying unsorted and sorted QList"));
+    statusLabel->setText(tr("Displaying unsorted and sorted QList.\nScroll down on the QList window to see new numbers."));
     getFortuneButton->setEnabled(true);
 }
 

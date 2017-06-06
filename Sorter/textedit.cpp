@@ -1,6 +1,5 @@
 #include "textedit.h"
 #include "ui_textedit.h"
-//#include "consumer.h"
 
 TextEdit::~TextEdit()
 {

@@ -14,9 +14,7 @@ class TextEdit : public QTextEdit
 
 public:
     ~TextEdit();
-    int send;
 
-    QTextEdit QTE;
 public slots:
     void SetText(QString);
 

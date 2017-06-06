@@ -54,6 +54,9 @@ void Consumer::pour()
         QS += QString::number(QList_ptr->takeFirst());
         QS += "\n" ;
     }
+
+    QS += "\n";
+
     myQMutex.unlock(); // Unlock the thread
 
     emit sendSignal(QS);

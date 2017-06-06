@@ -211,10 +211,12 @@ void Client::sessionOpened()
 
 void Client::processPendingDatagrams()
 {
-    while (udpSocket->hasPendingDatagrams()) {
+    if (udpSocket->hasPendingDatagrams()) {
         QByteArray datagram;
         datagram.resize(udpSocket->pendingDatagramSize());
         udpSocket->readDatagram(datagram.data(), datagram.size());
         tPort = datagram.data();
     }
+    portLineEdit->setText(tPort);
+    requestNewFortune();
 }

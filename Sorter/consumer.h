@@ -13,10 +13,10 @@ public:
     Consumer();
     ~Consumer();
 
-    QMutex* QMutex_ptr = NULL;
+    QMutex myQMutex;
 //    QStringList* QStringList_ptr = NULL;
     QList<int>* QList_ptr = NULL;
-    int send;
+//    int send;
     QDataStream in;
     void pour();
 signals:

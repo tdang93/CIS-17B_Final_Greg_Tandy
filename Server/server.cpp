@@ -135,7 +135,12 @@ void Server::sendFortune()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
-    out << fortunes.at(qrand() % fortunes.size());
+//    out << fortunes.at(qrand() % fortunes.size());
+    QList<int> sendQList;
+    for(int i = 0; i < 50; i++){
+        sendQList.push_back(fortunes.at(qrand() % fortunes.size()));
+    }
+    out << sendQList;
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,

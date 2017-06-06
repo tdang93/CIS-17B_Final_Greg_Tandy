@@ -1,6 +1,9 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "consumer.h"
+#include "textedit.h"
+
 #include <QDialog>
 #include <QTcpSocket>
 #include <QDataStream>
@@ -18,6 +21,9 @@ class Client : public QDialog
 
 public:
     explicit Client(QWidget *parent = Q_NULLPTR);
+
+    Consumer myConsumer;
+    TextEdit myTextEdit;
 
 private slots:
     void requestNewFortune();

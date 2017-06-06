@@ -118,6 +118,8 @@ Client::Client(QWidget *parent)
         statusLabel->setText(tr("Opening network session."));
         networkSession->open();
     }
+    QObject::connect(&myConsumer, SIGNAL(sendSignal(QString)), &myTextEdit, SLOT(SetText(QString)));
+    myTextEdit.show();
 }
 
 void Client::requestNewFortune()
@@ -132,16 +134,16 @@ void Client::readFortune()
 {
     in.startTransaction();
 
-    QString nextFortune;
+//    QString nextFortune;
 //    in >> nextFortune;
     // Modification to accept int to QString
-    int temp;
-    in >> temp;
-    nextFortune = QString::number(temp);
+    QList<int> receiveQList;
+    in >> receiveQList;
+//    nextFortune = QString::number(temp);
 
     if (!in.commitTransaction())
         return;
-
+/*
     if (nextFortune == currentFortune) {
         QTimer::singleShot(0, this, &Client::requestNewFortune);
         return;
@@ -149,6 +151,14 @@ void Client::readFortune()
 
     currentFortune = nextFortune;
     statusLabel->setText(currentFortune);
+*/
+    statusLabel->setText(tr("received QList"));
+    myConsumer.QList_ptr = &receiveQList;
+
+    statusLabel->setText(tr("sorting QList"));
+    myConsumer.run();
+
+    statusLabel->setText(tr("displaying unsorted and sorted QList"));
     getFortuneButton->setEnabled(true);
 }
 

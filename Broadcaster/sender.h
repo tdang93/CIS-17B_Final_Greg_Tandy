@@ -1,6 +1,8 @@
 #ifndef SENDER_H
 #define SENDER_H
 
+#include <QTime>
+
 #include <QWidget>
 
 class QDialogButtonBox;
@@ -8,6 +10,7 @@ class QLabel;
 class QPushButton;
 class QTimer;
 class QUdpSocket;
+class QTime;
 
 class Sender : public QWidget
 {
@@ -15,6 +18,7 @@ class Sender : public QWidget
 
 public:
     Sender(QWidget *parent = 0);
+    QTime myQTime;
 
 private slots:
     void startBroadcasting();

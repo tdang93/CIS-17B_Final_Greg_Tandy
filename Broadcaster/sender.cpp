@@ -13,7 +13,7 @@ Sender::Sender(QWidget *parent)
     quitButton = new QPushButton(tr("&Quit"));
 
     buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
+ //   buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     timer = new QTimer(this);

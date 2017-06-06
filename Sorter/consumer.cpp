@@ -75,6 +75,5 @@ void Consumer::processPendingDatagrams()
         datagram.resize(udpSocket->pendingDatagramSize());
         udpSocket->readDatagram(datagram.data(), datagram.size());
         cTime = datagram.data();
-
     }
 }

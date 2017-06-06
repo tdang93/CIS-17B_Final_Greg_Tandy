@@ -52,6 +52,7 @@ private:
     QUdpSocket *udpSocket;
 
     QString tPort;
+    QString latestTCPport = "";
     QString latestCTime = "";
 };
 

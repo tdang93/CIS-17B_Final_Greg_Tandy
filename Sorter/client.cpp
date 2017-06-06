@@ -205,7 +205,7 @@ void Client::sessionOpened()
     settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
     settings.endGroup();
 
-    statusLabel->setText(tr("Run this program with TCP_Server and UDP_Broadcaster."));
+    statusLabel->setText(tr("Run this program with TCP Server and UDP Broadcaster."));
 
     enableGetFortuneButton();
 }
@@ -218,9 +218,15 @@ void Client::processPendingDatagrams()
         udpSocket->readDatagram(datagram.data(), datagram.size());
         tPort = datagram.data();
         portLineEdit->setText(tPort);
-//        statusLabel->setText(tr("Connected to TCP_Server. Waiting for UDP_Broadcaster."));
+//        statusLabel->setText(tr("Connected to TCP Server. Waiting for UDP Broadcaster."));
+        if (tPort != latestTCPport) {
+            latestTCPport = tPort;
+//            if (myConsumer.cTime = latestCTime) {
+//                statusLabel->setText(tr("Connected to TCP Server. Waiting for UDP Broadcaster."));
+//            }
+        }
     }
-    if(myConsumer.cTime != latestCTime){
+    if(myConsumer.cTime != latestCTime ){
         latestCTime = myConsumer.cTime;
         requestNewFortune();
     }

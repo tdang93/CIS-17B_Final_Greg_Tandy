@@ -2,7 +2,6 @@
 #define SENDER_H
 
 #include <QWidget>
-#include <QDateTime>
 
 class QDialogButtonBox;
 class QLabel;
@@ -16,7 +15,7 @@ class Sender : public QWidget
 
 public:
     Sender(QWidget *parent = 0);
-    QString cTime;
+
 private slots:
     void startBroadcasting();
     void broadcastDatagram();

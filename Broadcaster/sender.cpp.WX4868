@@ -40,7 +40,9 @@ void Sender::startBroadcasting()
 
 void Sender::broadcastDatagram()
 {
-    statusLabel->setText(tr("Now broadcasting datagram %1").arg(messageNo));
+    QDateTime myQDateTime;
+    cTime = myQDateTime.toString();
+    statusLabel->setText(tr("Now broadcasting datagram %1").arg(cTime));
     QByteArray datagram = "Broadcast message " + QByteArray::number(messageNo);
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
                              QHostAddress::Broadcast, 45454);

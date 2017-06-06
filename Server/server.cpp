@@ -37,6 +37,8 @@ Server::Server(QWidget *parent)
     } else {
         sessionOpened();
     }
+
+    // Fortune assignment code moved to sessionOpened()
 /*
     fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
              << tr("You've got to think about tomorrow.")
@@ -46,10 +48,6 @@ Server::Server(QWidget *parent)
              << tr("You cannot kill time without injuring eternity.")
              << tr("Computers are not intelligent. They only think they are.");
 */
-    // New code added to populate the QList of ints
-    for(int i = 0; i < 50; i++){
-        fortunes.push_back((qrand() % 1000) + 1);
-    }
 
     QPushButton *quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
@@ -85,6 +83,11 @@ Server::Server(QWidget *parent)
 
 void Server::sessionOpened()
 {
+    // New code added to populate the QList of ints
+    for(int i = 0; i < 1000; i++){
+        fortunes.push_back(i + 1);
+    }
+
     // Save the used configuration
     if (networkSession) {
         QNetworkConfiguration config = networkSession->configuration();

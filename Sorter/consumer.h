@@ -14,7 +14,8 @@ public:
     ~Consumer();
 
     QMutex* QMutex_ptr = NULL;
-    QStringList* QStringList_ptr = NULL;
+//    QStringList* QStringList_ptr = NULL;
+    QList<int>* QList_ptr = NULL;
     int send;
     QDataStream in;
     void pour();

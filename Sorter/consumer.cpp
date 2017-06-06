@@ -25,7 +25,7 @@ void Consumer::pour()
     QString QS;
     int counter = 0;
     QS += "Unsorted contents\n";
-    for (int i = 0; i < QStringList_ptr->size(); ++i)
+    for (int i = 0; i < QList_ptr->size(); ++i)
     {
         counter++;
         QS += "#";
@@ -34,15 +34,15 @@ void Consumer::pour()
             QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
         }
         QS += QString::number(counter) += ": ";
-        QS += QStringList_ptr->at(i);
+        QS += QList_ptr->at(i);
         QS += "\n" ;
     }
     QS += "\n";
 
-    std::sort(QStringList_ptr->begin(), QStringList_ptr->end());
+    std::sort(QList_ptr->begin(), QList_ptr->end());
     counter = 0;
     QS += "Sorted contents\n";
-    while(!QStringList_ptr->isEmpty())
+    while(!QList_ptr->isEmpty())
     {
         counter++;
         QS += "#";
@@ -51,7 +51,7 @@ void Consumer::pour()
             QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
         }
         QS += QString::number(counter) += ": ";
-        QS += QStringList_ptr->takeFirst();
+        QS += QList_ptr->takeFirst();
         QS += "\n" ;
     }
     QMutex_ptr->unlock(); // Unlock the thread

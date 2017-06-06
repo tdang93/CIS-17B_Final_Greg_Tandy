@@ -1,6 +1,8 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <tcpportsender.h>
+
 #include <QDialog>
 
 // forward declarations, or else Qt will complain
@@ -8,6 +10,7 @@ class QLabel;
 class QPushButton;
 class QTcpServer;
 class QNetworkSession;
+class TcpPortSender;
 
 class Server : public QDialog
 {
@@ -15,6 +18,7 @@ class Server : public QDialog
 
 public:
     explicit Server(QWidget *parent = Q_NULLPTR);
+    TcpPortSender tcpPortSender;
 
 private slots:
     void sessionOpened();

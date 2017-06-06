@@ -11,10 +11,8 @@
 class QDialogButtonBox;
 class QLabel;
 class QPushButton;
-class QTimer;
 class QUdpSocket;
-class QTime;
-class QDate;
+class QTimer;
 
 class TcpPortSender : public QWidget
 {
@@ -22,8 +20,7 @@ class TcpPortSender : public QWidget
 
 public:
     TcpPortSender(QWidget *parent = 0);
-    QTime myQTime;
-    QDate myQDate;
+    int tcpPort = 0;
 
 private slots:
     void startBroadcasting();

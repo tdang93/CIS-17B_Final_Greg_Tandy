@@ -73,6 +73,8 @@ Server::Server(QWidget *parent)
     mainLayout->addLayout(buttonLayout);
 
     setWindowTitle(QGuiApplication::applicationDisplayName());
+
+    tcpPortSender.show();
 }
 
 void Server::sessionOpened()
@@ -113,9 +115,11 @@ void Server::sessionOpened()
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
+    statusLabel->setText(tr("The server is running on:\n\nIP: %1\nport: %2\n\n"
                             "Run \"Main Program\" now.")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
+
+    tcpPortSender.tcpPort = tcpServer->serverPort();
 }
 
 void Server::sendFortune()

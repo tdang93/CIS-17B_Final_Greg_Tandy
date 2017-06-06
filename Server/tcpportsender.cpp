@@ -39,12 +39,8 @@ void TcpPortSender::startBroadcasting()
 
 void TcpPortSender::broadcastDatagram()
 {
-    QString cTime = (QTime::currentTime().toString());
-    time_t cDate;
-    time (&cDate);
-
-    statusLabel->setText(ctime(&cDate));
-    QByteArray datagram = cTime.toUtf8();
+    statusLabel->setText(QString::number(tcpPort));
+    QByteArray datagram = QByteArray::number(tcpPort);
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
                              QHostAddress::Broadcast, 54545);
 }

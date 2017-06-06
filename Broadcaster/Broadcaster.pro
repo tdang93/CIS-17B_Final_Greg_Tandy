@@ -1,5 +1,4 @@
-QT += network widgets
-QT += core
+QT += network widgets core
 
 HEADERS       = sender.h
 SOURCES       = sender.cpp \

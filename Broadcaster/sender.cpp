@@ -18,7 +18,6 @@ Sender::Sender(QWidget *parent)
 
     timer = new QTimer(this);
     udpSocket = new QUdpSocket(this);
-    messageNo = 1;
 
     connect(startButton, SIGNAL(clicked()), this, SLOT(startBroadcasting()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -40,12 +39,10 @@ void Sender::startBroadcasting()
 
 void Sender::broadcastDatagram()
 {
-    //(QTime::currentTime().toString())
-    statusLabel->setText(tr("Now broadcasting datagram %1").arg(messageNo));
-//    QByteArray datagram = "Broadcast message " + QByteArray::number(messageNo);
-    QString temp = (QTime::currentTime().toString());
-    QByteArray datagram = "Broadcast message " + temp::toUtf8();
+    QString cTime = (QTime::currentTime().toString());
+    QString cDate = (myQDate.toString("dd") + myQDate.toString("mm") + myQDate.toString("yy"));
+    statusLabel->setText(cTime + cDate);
+    QByteArray datagram = cTime.toUtf8() + cDate.toUtf8();
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
                              QHostAddress::Broadcast, 45454);
-    ++messageNo;
 }

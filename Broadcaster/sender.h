@@ -2,6 +2,7 @@
 #define SENDER_H
 
 #include <QTime>
+#include <QDate>
 
 #include <QWidget>
 
@@ -11,6 +12,7 @@ class QPushButton;
 class QTimer;
 class QUdpSocket;
 class QTime;
+class QDate;
 
 class Sender : public QWidget
 {
@@ -19,6 +21,7 @@ class Sender : public QWidget
 public:
     Sender(QWidget *parent = 0);
     QTime myQTime;
+    QDate myQDate;
 
 private slots:
     void startBroadcasting();
@@ -31,7 +34,6 @@ private:
     QDialogButtonBox *buttonBox;
     QUdpSocket *udpSocket;
     QTimer *timer;
-    int messageNo;
 };
 
 #endif

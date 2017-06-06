@@ -11,6 +11,11 @@ Client::Client(QWidget *parent)
     , tcpSocket(new QTcpSocket(this))
     , networkSession(Q_NULLPTR)
 {
+    udpSocket = new QUdpSocket(this);
+    udpSocket->bind(54545, QUdpSocket::ShareAddress);
+    connect(udpSocket, SIGNAL(readyRead()),
+            this, SLOT(processPendingDatagrams()));
+
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     hostCombo->setEditable(true);
     // find out name of this machine
@@ -202,4 +207,14 @@ void Client::sessionOpened()
     statusLabel->setText(tr("Run this program with TCP_Server and UDP_Broadcaster."));
 
     enableGetFortuneButton();
+}
+
+void Client::processPendingDatagrams()
+{
+    while (udpSocket->hasPendingDatagrams()) {
+        QByteArray datagram;
+        datagram.resize(udpSocket->pendingDatagramSize());
+        udpSocket->readDatagram(datagram.data(), datagram.size());
+        tPort = datagram.data();
+    }
 }

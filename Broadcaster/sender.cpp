@@ -34,7 +34,7 @@ Sender::Sender(QWidget *parent)
 void Sender::startBroadcasting()
 {
     startButton->setEnabled(false);
-    timer->start(1000);
+    timer->start(100);
 }
 
 void Sender::broadcastDatagram()
@@ -46,5 +46,5 @@ void Sender::broadcastDatagram()
     statusLabel->setText(ctime(&cDate));
     QByteArray datagram = cTime.toUtf8();
     udpSocket->writeDatagram(datagram.data(), datagram.size(),
-                             QHostAddress::Broadcast, 45454);
+                             QHostAddress::Broadcast, 54545);
 }

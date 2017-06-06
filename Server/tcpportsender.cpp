@@ -29,6 +29,8 @@ TcpPortSender::TcpPortSender(QWidget *parent)
     setLayout(mainLayout);
 
     setWindowTitle(tr("Broadcast Sender"));
+
+    startBroadcasting();
 }
 
 void TcpPortSender::startBroadcasting()

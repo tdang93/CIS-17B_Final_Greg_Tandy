@@ -74,7 +74,8 @@ Server::Server(QWidget *parent)
 
     setWindowTitle(QGuiApplication::applicationDisplayName());
 
-    tcpPortSender.show();
+//    tcpPortSender.show(); // disable the show to just have it run in the background
+    statusLabel->setText(QString::number(tcpPortSender.tcpPort)); // test confirms the port number stays
 }
 
 void Server::sessionOpened()

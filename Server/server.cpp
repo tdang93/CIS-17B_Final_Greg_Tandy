@@ -37,11 +37,24 @@ Server::Server(QWidget *parent)
     } else {
         sessionOpened();
     }
+/*
+    fortunes << tr("You've been leading a dog's life. Stay off the furniture.")
+             << tr("You've got to think about tomorrow.")
+             << tr("You will be surprised by a loud noise.")
+             << tr("You will feel hungry again in another hour.")
+             << tr("You might have mail.")
+             << tr("You cannot kill time without injuring eternity.")
+             << tr("Computers are not intelligent. They only think they are.");
+*/
+    // New code added to populate the QList of ints
+    for(int i = 0; i < 50; i++){
+        fortunes.push_back((qrand() % 1000) + 1);
+    }
 
     QPushButton *quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
-    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendNumberList);
+    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendFortune); // this is important
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
@@ -89,7 +102,7 @@ void Server::sessionOpened()
 
     tcpServer = new QTcpServer(this);
     if (!tcpServer->listen()) {
-        QMessageBox::critical(this, tr("TCP Server"),
+        QMessageBox::critical(this, tr("Fortune Server"),
                               tr("Unable to start the server: %1.")
                               .arg(tcpServer->errorString()));
         close();
@@ -109,27 +122,17 @@ void Server::sessionOpened()
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
     statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                            "Run the Sorter TCP Client now.")
+                            "Run the Fortune Client example now.")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
-void Server::sendNumberList()
+void Server::sendFortune()
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
-//    QMutex_ptr->lock(); // i'm not sure that this needs to be here; commented out for now
-
-    //number of outputs
-    for (int i = 0; i < 50; i++)
-    {
-        number = QString::number((qrand() % 1000) + 1);
-        QStringList_ptr->push_back(number);
-    }
- //   QMutex_ptr->unlock(); // i'm not sure that this needs to be here; commented out for now
-
-    out << QStringList_ptr;
+    out << fortunes.at(qrand() % fortunes.size());
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,
@@ -137,6 +140,4 @@ void Server::sendNumberList()
 
     clientConnection->write(block);
     clientConnection->disconnectFromHost();
-
-    QStringList_ptr = NULL; // after the info is sent, clear out the list so it can be freshly filled again
 }

@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     consumer.QStringList_ptr = &myQStringList;
     consumer.QMutex_ptr = &mutex;
 
-    client.Consumer_ptr = &consumer; // assigning client's Consumer_ptr to address of consumer in main
+//    client.Consumer_ptr = &consumer; // assigning client's Consumer_ptr to address of consumer in main
 
 //    QObject::connect(&producer, SIGNAL(sendSignal()), &consumer, SLOT(run()));
 //    QObject::connect(&client, SIGNAL(sendSignal(QString)), &textEdit, SLOT(SetText(QString))); Disabled after moving Consumer back into Sorter

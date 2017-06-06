@@ -1,14 +1,15 @@
 #include <QtWidgets>
 #include <QtNetwork>
-
+#include <QDebug>
 #include "client.h"
-#include "consumer.h"
 
-Client::Client(QWidget *parent)
+Client::Client(QWidget *parent) // much of this code is kept from the original, and compounded with server.cpp code for sending functionality
     : QDialog(parent)
     , hostCombo(new QComboBox)
     , portLineEdit(new QLineEdit)
-    , startButton(new QPushButton(tr("Start")))
+    , addLineEdit(new QLineEdit)
+    , addButton(new QPushButton(tr("Add Fortune")))
+    , getFortuneButton(new QPushButton(tr("Get Fortune")))
     , tcpSocket(new QTcpSocket(this))
     , networkSession(Q_NULLPTR)
 {
@@ -43,31 +44,41 @@ Client::Client(QWidget *parent)
     hostLabel->setBuddy(hostCombo);
     QLabel *portLabel = new QLabel(tr("S&erver port:"));
     portLabel->setBuddy(portLineEdit);
+    QLabel *addLabel = new QLabel(tr("Add Fortune:"));
+    addLabel->setBuddy(addLineEdit);
+    successLabel = new QLabel(tr(""));
 
-    statusLabel = new QLabel(tr("Please run the Server as well."));
+    statusLabel = new QLabel(tr("This examples requires that you run the "
+                                "Fortune Server example as well."));
 
-    startButton->setDefault(true);
-    startButton->setEnabled(false);
+    getFortuneButton->setDefault(true);
+    getFortuneButton->setEnabled(false);
+    addButton->setEnabled(false);
 
     QPushButton *quitButton = new QPushButton(tr("Quit"));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(startButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(addButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(getFortuneButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     in.setDevice(tcpSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
     connect(hostCombo, &QComboBox::editTextChanged,
-            this, &Client::enableStartButton);
+            this, &Client::enableGetFortuneButton);
     connect(portLineEdit, &QLineEdit::textChanged,
-            this, &Client::enableStartButton);
-    connect(startButton, &QAbstractButton::clicked,
-            this, &Client::requestNumberList);
+            this, &Client::enableGetFortuneButton);
+    connect(addLineEdit, &QLineEdit::textEdited,
+            this, &Client::enableAddButton);
+    connect(addLineEdit, &QLineEdit::editingFinished,
+            this, &Client::setNewFortune);
+    connect(getFortuneButton, &QAbstractButton::clicked,
+            this, &Client::requestNewFortune);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
-    connect(tcpSocket, &QIODevice::readyRead, this, &Client::readNumberList); // reworked so that it runs Consumer from inside Client
-//    connect(tcpSocket, &QIODevice::readyRead, this, &Client::Consumer_ptr->run()); // doesn't work
-    connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+    connect(tcpSocket, &QIODevice::readyRead, this, &Client::readFortune);
+    typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
+    connect(tcpSocket, static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
             this, &Client::displayError);
 
     QGridLayout *mainLayout = Q_NULLPTR;
@@ -90,7 +101,10 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(portLabel, 1, 0);
     mainLayout->addWidget(portLineEdit, 1, 1);
     mainLayout->addWidget(statusLabel, 2, 0, 1, 2);
-    mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
+    mainLayout->addWidget(successLabel, 3, 0);
+    mainLayout->addWidget(buttonBox, 3, 1, 1, 2);
+    mainLayout->addWidget(addLabel, 4, 0);
+    mainLayout->addWidget(addLineEdit, 4, 1);
 
     setWindowTitle(QGuiApplication::applicationDisplayName());
     portLineEdit->setFocus();
@@ -110,71 +124,55 @@ Client::Client(QWidget *parent)
             config = manager.defaultConfiguration();
         }
 
-        networkSession = new QNetworkSession(config, this);
+        networkSession = new QNetworkSession(config, this); // networkSession pointer assigned an address here to work with
         connect(networkSession, &QNetworkSession::opened, this, &Client::sessionOpened);
 
-        startButton->setEnabled(false);
+        getFortuneButton->setEnabled(false);
         statusLabel->setText(tr("Opening network session."));
         networkSession->open();
+    } else {
+        sessionOpened();
     }
 }
 
-void Client::requestNumberList()
+void Client::requestNewFortune()
 {
-    startButton->setEnabled(false);
+    addLineEdit->setPlaceholderText(tempFortune);
+    addLineEdit->setText("");
+    getFortuneButton->setEnabled(false);
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(),
                              portLineEdit->text().toInt());
 }
 
-// reworked so that it runs Consumer from inside Client
-void Client::readNumberList()
+void Client::readFortune()
 {
-    Consumer_ptr->run();
-/*
-    QMutex_ptr->lock();
-
-    QStringList numberList;
-    in >> numberList;
-
-    QString QS;
-    int counter = 0;
-    QS += "Unsorted contents\n";
-    for (int i = 0; i < numberList.size(); ++i)
+    if (fortuneStop == 0)
     {
-        counter++;
-        QS += "#";
-        if(counter < 10)
-        {
-            QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
+        in.startTransaction();
+
+        QString nextFortune;
+//        in >> nextFortune;
+        // Modifications to make it accept an int, then convert it to a QString
+        int temp;
+        in >> temp;
+        nextFortune = QString::number(temp);
+
+        if (!in.commitTransaction())
+            return;
+
+        if (nextFortune == currentFortune) {
+            QTimer::singleShot(0, this, &Client::requestNewFortune);
+            return;
         }
-        QS += QString::number(counter) += ": ";
-        QS += numberList.at(i);
-        QS += "\n" ;
+
+        currentFortune = nextFortune;
+        statusLabel->setText(currentFortune);
+        getFortuneButton->setEnabled(true);
     }
-    QS += "\n";
-
-    std::sort(numberList.begin(), numberList.end());
-    counter = 0;
-    QS += "Sorted contents\n";
-    while(!numberList.isEmpty())
-    {
-        counter++;
-        QS += "#";
-        if(counter < 10)
-        {
-            QS += "0"; // formatting for single digit numbers (e.g. 01, 02, 03, etc.)
-        }
-        QS += QString::number(counter) += ": ";
-        QS += numberList.takeFirst();
-        QS += "\n" ;
-    }
-    QMutex_ptr->unlock(); // Unlock the thread
-
-    emit sendSignal(QS);
-
-    startButton->setEnabled(true);
-*/
+    fortuneStop = 0;
+    addLineEdit->setText(tempFortune);
+    addLineEdit->setPlaceholderText("");
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
@@ -183,50 +181,85 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
     case QAbstractSocket::RemoteHostClosedError:
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Sorter Client"),
+        QMessageBox::information(this, tr("Fortune Client"),
                                  tr("The host was not found. Please check the "
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Sorter Client"),
+        QMessageBox::information(this, tr("Fortune Client"),
                                  tr("The connection was refused by the peer. "
-                                    "Make sure the Server is running, "
+                                    "Make sure the fortune server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
     default:
-        QMessageBox::information(this, tr("Sorter Client"),
+        QMessageBox::information(this, tr("Fortune Client"),
                                  tr("The following error occurred: %1.")
                                  .arg(tcpSocket->errorString()));
     }
 
-    startButton->setEnabled(true);
+    getFortuneButton->setEnabled(true);
 }
 
-void Client::enableStartButton()
+void Client::enableGetFortuneButton()
 {
-    startButton->setEnabled((!networkSession || networkSession->isOpen()) &&
+    getFortuneButton->setEnabled((!networkSession || networkSession->isOpen()) &&
                                  !hostCombo->currentText().isEmpty() &&
                                  !portLineEdit->text().isEmpty());
+}
+void Client::enableAddButton()
+{
+    addButton->setEnabled((!networkSession || networkSession->isOpen()) &&
+                          !hostCombo->currentText().isEmpty() &&
+                          !portLineEdit->text().isEmpty() && !addLineEdit->text().isEmpty());
+    successLabel->setText("");
 }
 
 void Client::sessionOpened()
 {
     // Save the used configuration
-    QNetworkConfiguration config = networkSession->configuration();
-    QString id;
-    if (config.type() == QNetworkConfiguration::UserChoice)
-        id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-    else
-        id = config.identifier();
+    if (networkSession) {
+        QNetworkConfiguration config = networkSession->configuration();
+        QString id;
+        if (config.type() == QNetworkConfiguration::UserChoice)
+            id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
+        else
+            id = config.identifier();
 
-    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-    settings.beginGroup(QLatin1String("QtNetwork"));
-    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-    settings.endGroup();
+        QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
+        settings.beginGroup(QLatin1String("QtNetwork"));
+        settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
+        settings.endGroup();
+    }
 
-    statusLabel->setText(tr("This program requires that you run the "
-                            "Server as well."));
-
-    enableStartButton();
+    tcpServer = new QTcpServer(this);
+    if (!tcpServer->listen()) {
+        QMessageBox::critical(this, tr("Fortune Server"),
+                              tr("Unable to start the server: %1.")
+                              .arg(tcpServer->errorString()));
+        close();
+        return;
+    }
+    QString ipAddress;
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    // use the first non-localhost IPv4 address
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+        if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+                ipAddressesList.at(i).toIPv4Address()) {
+            ipAddress = ipAddressesList.at(i).toString();
+            break;
+        }
+    }
+    // if we did not find one, use IPv4 localhost
+    if (ipAddress.isEmpty())
+        ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+    // copied from server.cpp - commented out the display text for ip address and port info
+    statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
+                            "Run the Fortune Client example now.")
+                         .arg(ipAddress).arg(tcpServer->serverPort()));
+}
+void Client::setNewFortune()
+{
+    newFortune = addLineEdit->text();
+    tempFortune = addLineEdit->text();
 }

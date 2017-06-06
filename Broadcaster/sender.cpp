@@ -29,6 +29,8 @@ Sender::Sender(QWidget *parent)
     setLayout(mainLayout);
 
     setWindowTitle(tr("Broadcast Sender"));
+
+    startBroadcasting();
 }
 
 void Sender::startBroadcasting()
